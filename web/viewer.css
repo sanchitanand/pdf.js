@@ -1539,6 +1539,13 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   color: black;
 }
 
+.custom-tool-selection {
+    border: 1px dotted #000;
+    position: absolute;
+    background-color: rgba(255,0,0,0.5);
+
+}
+
 .grab-to-pan-grab {
   cursor: url("images/grab.cur"), move !important;
   cursor: grab !important;
