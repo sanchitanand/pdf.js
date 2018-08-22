@@ -1540,6 +1540,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
 }
 
 .custom-tool-selection {
+    position: absolute;
     border: 1px dotted #000;
     position: absolute;
     background-color: rgba(255,0,0,0.5);
