@@ -4,13 +4,8 @@ const states = {
     SELECTED: 3,
 };
 function CustomTool(options) {
-  console.log('Entering Custom Tool Main');
   this.element = options.element;
-  console.log('Custom Tool Element');
-  console.log(this.element);
   this.document = options.element.ownerDocument;
-  console.log('Custom Tool Document');
-  console.log(this.document);
   this.activate = this.activate.bind(this);
   this.deactivate = this.deactivate.bind(this);
   this.toggle = this.toggle.bind(this);
@@ -28,11 +23,8 @@ function CustomTool(options) {
 CustomTool.prototype = {
     getPages: function CustomTool_getPages() {
         this.pages = this.element.querySelectorAll('.page');
-        console.log('Custom Tool Pages');
-        console.log(this.pages);
     },
     activate: function CustomTool_activate() {
-        console.log('Custom Tool Activate');
         if (!this.state) {
             this.state = states.NO_ACTION;
             this.getPages();
@@ -43,7 +35,6 @@ CustomTool.prototype = {
         }
     },
     deactivate: function CustomTool_deactivate() {
-        console.log('Custom Tool Deactivate');
         if (this.state) {
             this.state = null;
             if (this.activeSelection) {
@@ -58,7 +49,6 @@ CustomTool.prototype = {
         }
     },
     _onmousedown: function CustomTool_onmousedown(event) {
-        console.log('Custom Tool mousedown');
         switch (this.state) {
             case states.NO_ACTION:
                 this.activeSelection = {};
@@ -66,8 +56,6 @@ CustomTool.prototype = {
                 let rect = this.activeSelection.page.getBoundingClientRect();
                 this.activeSelection.startX = event.clientX - rect.left;
                 this.activeSelection.startY = event.clientY - rect.top;
-                // this.activeSelection.startX = event.offsetX;
-                // this.activeSelection.startY = event.offsetY;
                 this.activeSelection.endX = this.activeSelection.startX;
                 this.activeSelection.endY = this.activeSelection.startY;
                 this._addbindings();
@@ -96,12 +84,9 @@ CustomTool.prototype = {
                 }
 
         }
-        console.log(this.activeSelection);
         event.preventDefault();
     },
     _onmousemove: function CustomTool_onmousemove(event) {
-        console.log('Custom Tool mousemove');
-        console.log(event);
         switch (this.state) {
             case states.NO_ACTION:
                 break;
@@ -109,18 +94,13 @@ CustomTool.prototype = {
                 let rect = this.activeSelection.page.getBoundingClientRect();
                 this.activeSelection.endX = event.clientX - rect.left;
                 this.activeSelection.endY = event.clientY - rect.top;
-                // this.activeSelection.endX = event.offsetX;
-                // this.activeSelection.endY = event.offsetY;
                 this.resizeSelectionBox();
                 break;
             case states.SELECTED:
                 break;
         }
-        // console.log(this.state);
-        // console.log(this.activeSelection);
     },
     _onmouseup: function CustomTool_onmouseup(event) {
-        console.log('Custom Tool mouseup');
         switch (this.state) {
             case states.NO_ACTION:
                 break;
@@ -134,7 +114,6 @@ CustomTool.prototype = {
                 this.state = states.NO_ACTION;
                 break;
         }
-        console.log(this.activeSelection);
     },
     _addbindings: function CustomTool_addbindings() {
         this.activeSelection.page.addEventListener('mousemove',
@@ -162,7 +141,6 @@ CustomTool.prototype = {
         let xMax = Math.max(this.activeSelection.startX, this.activeSelection.endX);
         let yMin = Math.min(this.activeSelection.startY, this.activeSelection.endY);
         let yMax = Math.max(this.activeSelection.startY, this.activeSelection.endY);
-        console.log(xMin, xMax, yMin, yMax);
         this.activeSelection.box.style.left = xMin + 'px';
         this.activeSelection.box.style.top = yMin + 'px';
         this.activeSelection.box.style.width = xMax - xMin + 'px';
