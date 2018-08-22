@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+import { CustomTool } from './custom_tool';
 import { GrabToPan } from './grab_to_pan';
 
 const CursorTool = {
@@ -43,6 +44,10 @@ class PDFCursorTools {
     this.activeBeforePresentationMode = null;
 
     this.handTool = new GrabToPan({
+      element: this.container,
+    });
+
+    this.customTool = new CustomTool({
       element: this.container,
     });
 
@@ -84,6 +89,7 @@ class PDFCursorTools {
           break;
         case CursorTool.CUSTOM:
           console.log('CustomTool Deactivate');
+          this.customTool.deactivate();
           break;
         case CursorTool.ZOOM:
           /* falls through */
@@ -101,6 +107,7 @@ class PDFCursorTools {
       case CursorTool.CUSTOM:
         console.log('CustomTool Activate');
         disableActiveTool();
+        this.customTool.activate();
         break;
       case CursorTool.ZOOM:
         /* falls through */
