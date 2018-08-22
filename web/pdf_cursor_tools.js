@@ -88,7 +88,6 @@ class PDFCursorTools {
           this.handTool.deactivate();
           break;
         case CursorTool.CUSTOM:
-          console.log('CustomTool Deactivate');
           this.customTool.deactivate();
           break;
         case CursorTool.ZOOM:
@@ -105,7 +104,6 @@ class PDFCursorTools {
         this.handTool.activate();
         break;
       case CursorTool.CUSTOM:
-        console.log('CustomTool Activate');
         disableActiveTool();
         this.customTool.activate();
         break;
