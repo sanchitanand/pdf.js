@@ -1723,6 +1723,10 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     content: url(images/secondaryToolbarButton-handTool@2x.png);
   }
 
+  .secondaryToolbarButton.customTool::before {
+    content: url(images/secondaryToolbarButton-customTool@2x.png);
+  }
+
   .secondaryToolbarButton.scrollVertical::before {
     content: url(images/secondaryToolbarButton-scrollVertical@2x.png);
   }
