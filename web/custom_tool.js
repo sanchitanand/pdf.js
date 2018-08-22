@@ -9,7 +9,7 @@ function CustomTool(options) {
   this.onActiveChanged = options.onActiveChanged;
   console.log('Custom Tool onActiveChanged');
   console.log(this.onActiveChanged);
-  this.actiavte = this.activate.bind(this);
+  this.activate = this.activate.bind(this);
   this.deactivate = this.deactivate.bind(this);
   this.toggle = this.toggle.bind(this);
 }
