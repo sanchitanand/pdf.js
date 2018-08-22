@@ -17,6 +17,11 @@ function CustomTool(options) {
   this._onmousedown = this._onmousedown.bind(this);
   this._onmousemove = this._onmousemove.bind(this);
   this._onmouseup = this._onmouseup.bind(this);
+  this._addbindings = this._addbindings.bind(this);
+  this._removebindings = this._removebindings.bind(this);
+  this.createSelectionBox = this.createSelectionBox.bind(this);
+  this.resizeSelectionBox = this.resizeSelectionBox.bind(this);
+  this.destroySelectionBox = this.destroySelectionBox.bind(this);
 }
 CustomTool.prototype = {
     getPages: function CustomTool_getPages() {
@@ -41,6 +46,7 @@ CustomTool.prototype = {
             this.state = null;
             if (this.activeSelection) {
                 this._removebindings();
+                this.destroySelectionBox();
                 this.activeSelection = null;
             }
             let _that = this;
@@ -55,19 +61,23 @@ CustomTool.prototype = {
             case states.NO_ACTION:
                 this.activeSelection = {};
                 this.activeSelection.page = event.target;
-                this.activeSelection.startX = event.offsetX;
-                this.activeSelection.startY = event.offsetY;
+                let rect = this.activeSelection.page.getBoundingClientRect();
+                this.activeSelection.startX = event.pageX - rect.left;
+                this.activeSelection.startY = event.pageY - rect.top;
                 this.activeSelection.endX = this.activeSelection.startX;
-                this.activeSelection.enY = this.activeSelection.startY;
+                this.activeSelection.endY = this.activeSelection.startY;
                 this._addbindings();
+                this.createSelectionBox();
                 this.state = states.SELECTING;
                 break;
             case states.SELECTING:
                 this._removebindings();
+                this.destroySelectionBox();
                 this.activeSelection = null;
                 this.state = states.NO_ACTION;
                 break;
             case states.SELECTED:
+                this.destroySelectionBox();
                 this.activeSelection = null;
                 this.state = states.NO_ACTION;
                 break;
@@ -77,17 +87,21 @@ CustomTool.prototype = {
     },
     _onmousemove: function CustomTool_onmousemove(event) {
         console.log('Custom Tool mousemove');
+        console.log(event);
         switch (this.state) {
             case states.NO_ACTION:
                 break;
             case states.SELECTING:
-                this.activeSelection.endX = event.offsetX;
-                this.activeSelection.endY = event.offsetY;
+                let rect = this.activeSelection.page.getBoundingClientRect();
+                this.activeSelection.endX = event.pageX - rect.left;
+                this.activeSelection.endY = event.pageY - rect.top;
+                this.resizeSelectionBox();
                 break;
             case states.SELECTED:
                 break;
         }
-        console.log(this.activeSelection);
+        // console.log(this.state);
+        // console.log(this.activeSelection);
     },
     _onmouseup: function CustomTool_onmouseup(event) {
         console.log('Custom Tool mouseup');
@@ -99,6 +113,7 @@ CustomTool.prototype = {
                 this.state = states.SELECTED;
                 break;
             case states.SELECTED:
+                this.destroySelectionBox();
                 this.activeSelection = null;
                 this.state = states.NO_ACTION;
                 break;
@@ -116,6 +131,30 @@ CustomTool.prototype = {
         this._onmousemove, true);
         this.document.removeEventListener('mouseup',
             this._onmouseup, true);
+    },
+    createSelectionBox: function CustomTool_createSelectionBox() {
+        this.activeSelection.box = this.document.createElement('div');
+        this.activeSelection.page.appendChild(this.activeSelection.box);
+        this.activeSelection.box.className = 'custom-tool-selection';
+        this.activeSelection.box.style.left = this.activeSelection.startX + 'px';
+        this.activeSelection.box.style.top = this.activeSelection.startY + 'px';
+        this.activeSelection.box.style.width = 0 + 'px';
+        this.activeSelection.box.style.height = 0 + 'px';
+    },
+    resizeSelectionBox: function CustomTool_resizeSelectionBox() {
+        let xMin = Math.min(this.activeSelection.startX, this.activeSelection.endX);
+        let xMax = Math.max(this.activeSelection.startX, this.activeSelection.endX);
+        let yMin = Math.min(this.activeSelection.startY, this.activeSelection.endY);
+        let yMax = Math.max(this.activeSelection.startY, this.activeSelection.endY);
+        console.log(xMin, xMax, yMin, yMax);
+        this.activeSelection.box.style.left = xMin + 'px';
+        this.activeSelection.box.style.top = yMin + 'px';
+        this.activeSelection.box.style.width = xMax - xMin + 'px';
+        this.activeSelection.box.style.height = yMax - yMin + 'px';
+
+    },
+    destroySelectionBox: function CustomTool_destroySelectionBox() {
+        this.activeSelection.page.removeChild(this.activeSelection.box);
     },
     toggle: function CustomTool_toggle() { },
 };
