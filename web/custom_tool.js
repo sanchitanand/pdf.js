@@ -9,10 +9,10 @@ function CustomTool(options) {
 }
 CustomTool.prototype = {
   activate: function CustomTool_activate() {
-    console.log('CustomTool Activate');
+    console.log('Custom Tool Activate');
   },
   deactivate: function CustomTool_deactivate() {
-    console.log('CustomTool Deactivate');
+    console.log('Custom Tool Deactivate');
   },
   toggle: function CustomTool_toggle() {},
 };
