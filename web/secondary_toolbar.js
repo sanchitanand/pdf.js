@@ -78,6 +78,8 @@ class SecondaryToolbar {
         eventDetails: { tool: CursorTool.SELECT, }, close: true, },
       { element: options.cursorHandToolButton, eventName: 'switchcursortool',
         eventDetails: { tool: CursorTool.HAND, }, close: true, },
+      { element: options.cursorCustomToolButton, eventName: 'switchcursortool',
+        eventDetails: { tool: CursorTool.CUSTOM, }, close: true,},
       { element: options.scrollVerticalButton, eventName: 'switchscrollmode',
         eventDetails: { mode: ScrollMode.VERTICAL, }, close: true, },
       { element: options.scrollHorizontalButton, eventName: 'switchscrollmode',
@@ -192,6 +194,7 @@ class SecondaryToolbar {
     this.eventBus.on('cursortoolchanged', function(evt) {
       buttons.cursorSelectToolButton.classList.remove('toggled');
       buttons.cursorHandToolButton.classList.remove('toggled');
+      buttons.cursorCustomToolButton.classList.remove('toggled');
 
       switch (evt.tool) {
         case CursorTool.SELECT:
@@ -199,6 +202,9 @@ class SecondaryToolbar {
           break;
         case CursorTool.HAND:
           buttons.cursorHandToolButton.classList.add('toggled');
+          break;
+        case CursorTool.CUSTOM:
+          buttons.cursorCustomToolButton.classList.add('toggled');
           break;
       }
     });

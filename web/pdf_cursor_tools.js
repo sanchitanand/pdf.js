@@ -19,6 +19,7 @@ const CursorTool = {
   SELECT: 0, // The default value.
   HAND: 1,
   ZOOM: 2,
+  CUSTOM: 3,
 };
 
 /**
@@ -81,6 +82,9 @@ class PDFCursorTools {
         case CursorTool.HAND:
           this.handTool.deactivate();
           break;
+        case CursorTool.CUSTOM:
+          console.log('CustomTool Deactivate');
+          break;
         case CursorTool.ZOOM:
           /* falls through */
       }
@@ -93,6 +97,10 @@ class PDFCursorTools {
       case CursorTool.HAND:
         disableActiveTool();
         this.handTool.activate();
+        break;
+      case CursorTool.CUSTOM:
+        console.log('CustomTool Activate');
+        disableActiveTool();
         break;
       case CursorTool.ZOOM:
         /* falls through */
