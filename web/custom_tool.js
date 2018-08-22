@@ -22,6 +22,7 @@ function CustomTool(options) {
   this.createSelectionBox = this.createSelectionBox.bind(this);
   this.resizeSelectionBox = this.resizeSelectionBox.bind(this);
   this.destroySelectionBox = this.destroySelectionBox.bind(this);
+  this.getBoundingBox = this.getBoundingBox.bind(this);
 }
 CustomTool.prototype = {
     getPages: function CustomTool_getPages() {
@@ -77,6 +78,7 @@ CustomTool.prototype = {
                 this.state = states.NO_ACTION;
                 break;
             case states.SELECTED:
+                alert(this.getBoundingBox());
                 this.destroySelectionBox();
                 this.activeSelection = null;
                 this.state = states.NO_ACTION;
@@ -156,6 +158,23 @@ CustomTool.prototype = {
     destroySelectionBox: function CustomTool_destroySelectionBox() {
         this.activeSelection.page.removeChild(this.activeSelection.box);
     },
-    toggle: function CustomTool_toggle() { },
+    getBoundingBox: function CustomTool_getBoundingBox() {
+        let pageWidth = parseInt(this.activeSelection.page.style.width);
+        let pageHeight = parseInt(this.activeSelection.page.style.height);
+        let bboxOutput = '';
+        bboxOutput += 'BoundingBox(' + (this.activeSelection.startX / pageWidth).toFixed(4) + ', ';
+        bboxOutput += (this.activeSelection.startY / pageHeight).toFixed(4) + ', ';
+        bboxOutput += (this.activeSelection.endX / pageWidth).toFixed(4) + ', ';
+        bboxOutput += (this.activeSelection.endY / pageHeight).toFixed(4) + ')';
+        return bboxOutput;
+
+    },
+    toggle: function CustomTool_toggle() {
+        if (this.state) {
+            this.deactivate();
+        } else {
+            this.activate();
+        }
+    },
 };
 export { CustomTool, };
