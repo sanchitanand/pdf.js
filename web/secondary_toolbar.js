@@ -79,7 +79,7 @@ class SecondaryToolbar {
       { element: options.cursorHandToolButton, eventName: 'switchcursortool',
         eventDetails: { tool: CursorTool.HAND, }, close: true, },
       { element: options.cursorCustomToolButton, eventName: 'switchcursortool',
-        eventDetails: { tool: CursorTool.CUSTOM, }, close: true,},
+        eventDetails: { tool: CursorTool.CUSTOM, }, close: true, },
       { element: options.scrollVerticalButton, eventName: 'switchscrollmode',
         eventDetails: { mode: ScrollMode.VERTICAL, }, close: true, },
       { element: options.scrollHorizontalButton, eventName: 'switchscrollmode',
