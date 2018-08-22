@@ -40,7 +40,7 @@ CustomTool.prototype = {
             if (this.activeSelection) {
                 this._removebindings();
                 this.destroySelectionBox();
-                this.activeSelection = null;
+                this.activeSelection = false;
             }
             let _that = this;
             this.pages.forEach(function (elem) {
@@ -51,13 +51,13 @@ CustomTool.prototype = {
     _onmousedown: function CustomTool_onmousedown(event) {
         switch (this.state) {
             case states.NO_ACTION:
-                this.activeSelection = {};
-                this.activeSelection.page = event.currentTarget;
-                let rect = this.activeSelection.page.getBoundingClientRect();
-                this.activeSelection.startX = event.clientX - rect.left;
-                this.activeSelection.startY = event.clientY - rect.top;
-                this.activeSelection.endX = this.activeSelection.startX;
-                this.activeSelection.endY = this.activeSelection.startY;
+                this.activeSelection = true;
+                this.activePage = event.currentTarget;
+                let rect = this.activePage.getBoundingClientRect();
+                this.startX = event.clientX - rect.left;
+                this.startY = event.clientY - rect.top;
+                this.endX = this.startX;
+                this.endY = this.startY;
                 this._addbindings();
                 this.createSelectionBox();
                 this.state = states.SELECTING;
@@ -65,20 +65,20 @@ CustomTool.prototype = {
             case states.SELECTING:
                 this._removebindings();
                 this.destroySelectionBox();
-                this.activeSelection = null;
+                this.activeSelection = false;
                 this.state = states.NO_ACTION;
                 break;
             case states.SELECTED:
-                if (this.activeSelection.page == event.currentTarget) {
+                if (this.activePage == event.currentTarget) {
                     alert(this.getBoundingBox());
                     this.destroySelectionBox();
-                    this.activeSelection = null;
+                    this.activeSelection = false;
                     this.state = states.NO_ACTION;
                     break;
                 } else {
                     this._removebindings();
                     this.destroySelectionBox();
-                    this.activeSelection = null;
+                    this.activeSelection = false;
                     this.state = states.NO_ACTION;
                     break;
                 }
@@ -91,9 +91,9 @@ CustomTool.prototype = {
             case states.NO_ACTION:
                 break;
             case states.SELECTING:
-                let rect = this.activeSelection.page.getBoundingClientRect();
-                this.activeSelection.endX = event.clientX - rect.left;
-                this.activeSelection.endY = event.clientY - rect.top;
+                let rect = this.activePage.getBoundingClientRect();
+                this.endX = event.clientX - rect.left;
+                this.endY = event.clientY - rect.top;
                 this.resizeSelectionBox();
                 break;
             case states.SELECTED:
@@ -110,54 +110,54 @@ CustomTool.prototype = {
                 break;
             case states.SELECTED:
                 this.destroySelectionBox();
-                this.activeSelection = null;
+                this.activeSelection = false;
                 this.state = states.NO_ACTION;
                 break;
         }
     },
     _addbindings: function CustomTool_addbindings() {
-        this.activeSelection.page.addEventListener('mousemove',
+        this.activePage.addEventListener('mousemove',
         this._onmousemove, true);
-        this.activeSelection.page.addEventListener('mouseup',
+        this.activePage.addEventListener('mouseup',
             this._onmouseup, true);
     },
     _removebindings: function CustomTool_removebindings() {
-        this.activeSelection.page.removeEventListener('mousemove',
+        this.activePage.removeEventListener('mousemove',
         this._onmousemove, true);
-        this.activeSelection.page.removeEventListener('mouseup',
+        this.activePage.removeEventListener('mouseup',
             this._onmouseup, true);
     },
     createSelectionBox: function CustomTool_createSelectionBox() {
-        this.activeSelection.box = this.document.createElement('div');
-        this.activeSelection.page.appendChild(this.activeSelection.box);
-        this.activeSelection.box.className = 'custom-tool-selection';
-        this.activeSelection.box.style.left = this.activeSelection.startX + 'px';
-        this.activeSelection.box.style.top = this.activeSelection.startY + 'px';
-        this.activeSelection.box.style.width = 0 + 'px';
-        this.activeSelection.box.style.height = 0 + 'px';
+        this.selectionBox = this.document.createElement('div');
+        this.activePage.appendChild(this.selectionBox);
+        this.selectionBox.className = 'custom-tool-selection';
+        this.selectionBox.style.left = this.startX + 'px';
+        this.selectionBox.style.top = this.startY + 'px';
+        this.selectionBox.style.width = 0 + 'px';
+        this.selectionBox.style.height = 0 + 'px';
     },
     resizeSelectionBox: function CustomTool_resizeSelectionBox() {
-        let xMin = Math.min(this.activeSelection.startX, this.activeSelection.endX);
-        let xMax = Math.max(this.activeSelection.startX, this.activeSelection.endX);
-        let yMin = Math.min(this.activeSelection.startY, this.activeSelection.endY);
-        let yMax = Math.max(this.activeSelection.startY, this.activeSelection.endY);
-        this.activeSelection.box.style.left = xMin + 'px';
-        this.activeSelection.box.style.top = yMin + 'px';
-        this.activeSelection.box.style.width = xMax - xMin + 'px';
-        this.activeSelection.box.style.height = yMax - yMin + 'px';
+        let xMin = Math.min(this.startX, this.endX);
+        let xMax = Math.max(this.startX, this.endX);
+        let yMin = Math.min(this.startY, this.endY);
+        let yMax = Math.max(this.startY, this.endY);
+        this.selectionBox.style.left = xMin + 'px';
+        this.selectionBox.style.top = yMin + 'px';
+        this.selectionBox.style.width = xMax - xMin + 'px';
+        this.selectionBox.style.height = yMax - yMin + 'px';
 
     },
     destroySelectionBox: function CustomTool_destroySelectionBox() {
-        this.activeSelection.page.removeChild(this.activeSelection.box);
+        this.activePage.removeChild(this.selectionBox);
     },
     getBoundingBox: function CustomTool_getBoundingBox() {
-        let pageWidth = parseInt(this.activeSelection.page.style.width);
-        let pageHeight = parseInt(this.activeSelection.page.style.height);
+        let pageWidth = parseInt(this.activePage.style.width);
+        let pageHeight = parseInt(this.activePage.style.height);
         let bboxOutput = '';
-        bboxOutput += 'BoundingBox(' + (this.activeSelection.startX / pageWidth).toFixed(4) + ', ';
-        bboxOutput += (this.activeSelection.startY / pageHeight).toFixed(4) + ', ';
-        bboxOutput += (this.activeSelection.endX / pageWidth).toFixed(4) + ', ';
-        bboxOutput += (this.activeSelection.endY / pageHeight).toFixed(4) + ')';
+        bboxOutput += 'BoundingBox(' + (this.startX / pageWidth).toFixed(4) + ', ';
+        bboxOutput += (this.startY / pageHeight).toFixed(4) + ', ';
+        bboxOutput += (this.endX / pageWidth).toFixed(4) + ', ';
+        bboxOutput += (this.endY / pageHeight).toFixed(4) + ')';
         return bboxOutput;
 
     },
